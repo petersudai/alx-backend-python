@@ -2,13 +2,13 @@
 """
 Contains method that safely gets value from dictionar
 """
-from typing import Mapping, Any, TypeVar, Union
+from typing import Mapping, Any, TypeVar, Union, Optional
 
 T = TypeVar('T')
 
 
 def safely_get_value(dct: Mapping, key: Any,
-                     default: T = None) -> Union[Any, T]:
+                     default: Optional[T] = None) -> Union[Any, T]:
     """
     Safely retrieves a value from a dictionary-like object
     """
