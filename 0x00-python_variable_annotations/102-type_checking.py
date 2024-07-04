@@ -2,7 +2,6 @@
 """
 This script defines a function zoom_array that zooms
 in on a tuple by repeating each element based on given factor.
-The function is type-annotated and validated using mypy.
 """
 from typing import Tuple, List, Any
 
