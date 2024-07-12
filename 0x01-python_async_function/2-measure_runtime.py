@@ -19,7 +19,7 @@ async def measure_time(n: int, max_delay: int) -> float:
     Returns:
         float: Average time per call.
     """
-    start_time = time.time()
+    start_time = time.perf_counter() # perf_counter used for more precise timing
     await wait_n(n, max_delay)
-    total_time = time.time() - start_time
+    total_time = time.perf_counter() - start_time
     return total_time / n
