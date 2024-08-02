@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Unit test Test client for access_nested_map function
+Unit test for access_nested_map function
 """
 
 import unittest
@@ -11,7 +11,7 @@ class TestAccessNestedMap(unittest.TestCase):
     """
     Test cases for access_nested_map function
     """
-    
+
     @parameterized.expand([
         ({"a": 1}, ("a",), 1),
         ({"a": {"b": 2}}, ("a",), {"b": 2}),
@@ -22,7 +22,7 @@ class TestAccessNestedMap(unittest.TestCase):
         Test access_nested_map with various nested maps and paths
         """
         self.assertEqual(access_nested_map(nested_map, path), expected)
-    
+
     @parameterized.expand([
         ({}, ("a",)),
         ({"a": 1}, ("a", "b")),
@@ -33,7 +33,7 @@ class TestAccessNestedMap(unittest.TestCase):
         """
         with self.assertRaises(KeyError) as cm:
             access_nested_map(nested_map, path)
-        self.assertEqual(str(cm.exception), f"KeyError('{path[-1]}')")
+        self.assertEqual(str(cm.exception), f"'{path[-1]}'")
 
 if __name__ == '__main__':
     unittest.main()
