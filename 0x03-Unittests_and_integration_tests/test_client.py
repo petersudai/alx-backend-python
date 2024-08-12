@@ -101,7 +101,7 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
     """
     Integration tests for GithubOrgClient class using fixtures
     """
-    
+
     @classmethod
     def setUpClass(cls):
         """
@@ -109,13 +109,13 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         """
         cls.get_patcher = patch('requests.get')
         cls.mock_get = cls.get_patcher.start()
-        
+
         # Configure side_effect to return appropriate payloads
         def side_effect(url, *args, **kwargs):
             if url.endswith("/repos"):
                 return MockResponse(cls.repos_payload, 200)
             return MockResponse(cls.org_payload, 200)
-        
+
         cls.mock_get.side_effect = side_effect
 
     @classmethod
@@ -124,7 +124,7 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         Stop patching
         """
         cls.get_patcher.stop()
-    
+
     def test_public_repos(self):
         """
         Test GithubOrgClient.public_repos integration
@@ -138,7 +138,10 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         Test GithubOrgClient.public_repos with license filter
         """
         # Update the mock to return filtered repos
-        self.mock_get.side_effect = lambda url, *args, **kwargs: MockResponse(self.apache2_repos if "apache-2.0" in url else self.repos_payload, 200)
+        self.mock_get.side_effect = lambda url, *args, **kwargs: MockResponse(
+            self.apache2_repos if "apache-2.0" in url else self.repos_payload,
+            200
+        )
 
         client = GithubOrgClient("test_org")
         result = client.public_repos(license="apache-2.0")
@@ -149,12 +152,14 @@ class MockResponse:
     """
     Mock Response object for simulating requests
     """
+
     def __init__(self, json_data, status_code):
         self.json_data = json_data
         self.status_code = status_code
 
     def json(self):
         return self.json_data
+
 
 if __name__ == '__main__':
     unittest.main()
