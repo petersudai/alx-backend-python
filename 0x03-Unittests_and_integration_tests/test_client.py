@@ -133,6 +133,17 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         result = client.public_repos()
         self.assertEqual(result, self.expected_repos)
 
+    def test_public_repos_with_license(self):
+        """
+        Test GithubOrgClient.public_repos with license filter
+        """
+        # Update the mock to return filtered repos
+        self.mock_get.side_effect = lambda url, *args, **kwargs: MockResponse(self.apache2_repos if "apache-2.0" in url else self.repos_payload, 200)
+
+        client = GithubOrgClient("test_org")
+        result = client.public_repos(license="apache-2.0")
+        self.assertEqual(result, self.apache2_repos)
+
 
 class MockResponse:
     """
