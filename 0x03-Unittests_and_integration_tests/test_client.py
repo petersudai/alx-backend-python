@@ -4,8 +4,9 @@ client.GithubOrgClient class.
 """
 import unittest
 from unittest.mock import patch, PropertyMock
-from parameterized import parameterized
+from parameterized import parameterized, parameterized_class
 from client import GithubOrgClient
+from fixtures import org_payload, repos_payload, expected_repos, apache2_repos
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -85,6 +86,64 @@ class TestGithubOrgClient(unittest.TestCase):
         result = client.has_license(repo, license_key)
         self.assertEqual(result, expected_result)
 
+
+@parameterized_class(
+    [
+        {
+            "org_payload": org_payload,
+            "repos_payload": repos_payload,
+            "expected_repos": expected_repos,
+            "apache2_repos": apache2_repos,
+        }
+    ]
+)
+class TestIntegrationGithubOrgClient(unittest.TestCase):
+    """
+    Integration tests for GithubOrgClient class using fixtures
+    """
+    
+    @classmethod
+    def setUpClass(cls):
+        """
+        Set up patching for requests.get
+        """
+        cls.get_patcher = patch('requests.get')
+        cls.mock_get = cls.get_patcher.start()
+        
+        # Configure side_effect to return appropriate payloads
+        def side_effect(url, *args, **kwargs):
+            if url.endswith("/repos"):
+                return MockResponse(cls.repos_payload, 200)
+            return MockResponse(cls.org_payload, 200)
+        
+        cls.mock_get.side_effect = side_effect
+
+    @classmethod
+    def tearDownClass(cls):
+        """
+        Stop patching
+        """
+        cls.get_patcher.stop()
+    
+    def test_public_repos(self):
+        """
+        Test GithubOrgClient.public_repos integration
+        """
+        client = GithubOrgClient("test_org")
+        result = client.public_repos()
+        self.assertEqual(result, self.expected_repos)
+
+
+class MockResponse:
+    """
+    Mock Response object for simulating requests
+    """
+    def __init__(self, json_data, status_code):
+        self.json_data = json_data
+        self.status_code = status_code
+
+    def json(self):
+        return self.json_data
 
 if __name__ == '__main__':
     unittest.main()
