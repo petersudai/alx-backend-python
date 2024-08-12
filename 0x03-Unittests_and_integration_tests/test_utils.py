@@ -43,7 +43,6 @@ class TestGetJson(unittest.TestCase):
     Test cases for get_json function
     """
 
-
     @parameterized.expand([
         ("http://example.com", {"payload": True}),
         ("http://holberton.io", {"payload": False}),
@@ -79,7 +78,9 @@ class TestMemoize(unittest.TestCase):
             def a_property(self):
                 return self.a_method()
 
-        with patch.object(TestClass, 'a_method', return_value=42) as mock_method:
+        with patch.object(
+                TestClass, 'a_method', return_value=42
+                ) as mock_method:
             test_obj = TestClass()
 
             result1 = test_obj.a_property
